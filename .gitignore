@@ -1,3 +1,6 @@
 .idea
 admin.iml
 composer.json
+/node_modules
+package-lock.json
+.vscode
