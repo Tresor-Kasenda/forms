@@ -21,6 +21,9 @@
           transition: opacity 0.5s ease-in-out;
         }
       </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 </head>
 
 <body class="bg-gray-100 font-sans">
