@@ -1,14 +1,4 @@
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Handle form submission here
-  // You can access form data using $_POST superglobal array
-  // For example, to get the value of the "participation" field:
-  $participation = $_POST['participation'];
-  // To get the value of the "annonces" field:
-  $annonces = $_POST['annonces'];
-  // ...
-}
-?>
+
 <!doctype html>
 <html lang="en">
 
@@ -41,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="max-w-4xl mx-auto min-h-screen">
         <div class="container bg-white rounded-lg shadow-lg px-6 py-8">
-            <form class="max-w-md mx-auto" id="my-form">
+            <form class="max-w-md mx-auto" id="my-form" method="post">
                 <div class="mb-4">
                     <label class="block text-gray-700 font-bold mb-2" for="nom-complet">Nom complet:</label>
                     <input
@@ -56,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input
                         class="form-input block w-full mt-1 rounded-lg border border-gray-300 placeholder:text-sm placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-50"
                         id="boite-mail" name="boite-mail" type="email" placeholder="Boite email" required>
-                        <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
-                            Veuillez entrez un email valide
+                        <p id="boite-email" class="text-red-500 text-xs mt-1 hidden">
+                            Veuillez entrer votre nom complet
                           </p>
                 </div>
                 <div class="mb-4">
@@ -69,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="femme">Femme</option>
                         <option value="autre">Autre</option>
                     </select>
-                    <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
+                    <p id="sexe" class="text-red-500 text-xs mt-1 hidden">
                         Veuillez entrer votre nom complet
                       </p>
                 </div>
@@ -78,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input
                         class="form-input block w-full mt-1 rounded-lg border border-gray-300 placeholder:text-sm placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-50"
                         id="contact" name="contact" placeholder="Contact: (+243) ..." type="tel" required>
-                        <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
+                        <p id="contact" class="text-red-500 text-xs mt-1 hidden">
                             Veuillez entrer votre nom complet
                           </p>
                 </div>
@@ -91,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="prive">Privé</option>
                         <option value="liberal">Libéral</option>
                     </select>
-                    <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
+                    <p id="secteur" class="text-red-500 text-xs mt-1 hidden">
                         Veuillez entrer votre nom complet
                       </p>
                 </div>
@@ -108,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="classique">CLASSIQUE 30$</option>
                         <option value="etudiant">ÉTUDIANT : GRATUIT</option>
                       </select>
-                      <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
+                      <p id="participation" class="text-red-500 text-xs mt-1 hidden">
                         Veuillez entrer votre nom complet
                       </p>
                     </div>
@@ -200,9 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="annonces-non" class="ml-2">Non</label>
                         </div>
                     </div>
-                    <p id="nom-complet-error" class="text-red-500 text-xs mt-1 hidden">
-                        Veuillez entrer votre nom complet
-                      </p>
                 </div>
                 <div class="mb-4">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -226,6 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const annoncesNon = document.getElementById('annonces-non');
 
         const successMessage = document.getElementById('success-message');
+
         form.addEventListener('submit', (event) => {
             event.preventDefault(); // prevent default form submission behavior
 
@@ -235,72 +223,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 nomComplet.classList.add('border-red-500');
                 nomComplet.focus();
                 return false;
-              } else {
+            } else {
                 document.getElementById('nom-complet-error').classList.add('hidden');
                 nomComplet.classList.remove('border-red-500');
-              }
-            
-              if (boiteMail.value === '') {
-                alert('Veuillez entrer votre boîte mail');
+            }
+
+            if (boiteMail.value === '' && isValidEmail(boiteMail.value)) {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
+                boiteMail.classList.add('border-red-500');
                 boiteMail.focus();
                 return false;
-              }
-            
-              if (sexe.value === '') {
-                alert('Veuillez sélectionner votre sexe');
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+                boiteMail.classList.remove('border-red-500');
+            }
+
+            if (sexe.value === '') {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
+                sexe.classList.add('border-red-500');
                 sexe.focus();
                 return false;
-              }
-            
-              if (contact.value === '') {
-                alert('Veuillez entrer votre contact');
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+                sexe.classList.remove('border-red-500');
+            }
+
+            if (contact.value === '') {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
+                contact.classList.add('border-red-500');
                 contact.focus();
                 return false;
-              }
-            
-              if (secteur.value === '') {
-                alert('Veuillez sélectionner votre secteur');
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+                contact.classList.remove('border-red-500');
+
+            }
+
+            if (secteur.value === '') {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
+                secteur.classList.add('border-red-500');
                 secteur.focus();
                 return false;
-              }
-            
-              if (participation.value === '') {
-                alert('Veuillez sélectionner votre participation');
+
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+                secteur.classList.remove('border-red-500');
+
+            }
+
+            if (participation.value === '') {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
+                participation.classList.add('border-red-500');
                 participation.focus();
                 return false;
-              }
-            
-              if (!annoncesOui.checked && !annoncesNon.checked) {
-                alert('Veuillez sélectionner si vous souhaitez recevoir les annonces relatives au droit de la commande publique');
+
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+                participation.classList.remove('border-red-500');
+
+            }
+
+            if (!annoncesOui.checked && !annoncesNon.checked) {
+                document.getElementById('nom-complet-error').classList.remove('hidden');
                 return false;
-              }
+            } else {
+                document.getElementById('nom-complet-error').classList.add('hidden');
+            }
 
-        // send form data to PHP script
-        const formData = new FormData(form);
-        fetch('submit-form.php', {
-        method: 'POST',
-        body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.success) {
-            form.classList.add('hidden');
-            successMessage.classList.remove('hidden');
-        } else {
-            toastr.error('Form submission failed.');
-        }
-        })
-        .catch(error => {
-        console.error(error);
-        toastr.error('An error occurred while submitting the form.');
+            // send form data to PHP script
+            const formData = new FormData(form);
+            fetch('submit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        form.classList.add('hidden');
+                        successMessage.classList.remove('hidden');
+                    } else {
+                        toastr.error('Form submission failed.');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    toastr.error('An error occurred while submitting the form.');
+                });
+            });
+            }
         });
-    });
 
+            let isValidEmail = (email) => {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            }
 
-    let isValidEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    }
     </script>
 </body>
 
